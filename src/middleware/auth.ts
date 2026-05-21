@@ -42,7 +42,7 @@ const auth = (...roles: Role[]) => {
         sendResponse(res, {
           success: false,
           statusCode: 403,
-          message: "Forbidden!",
+          message: "You do not have permission to access this resource!",
         });
       }
 

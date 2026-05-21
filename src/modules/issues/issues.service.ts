@@ -90,8 +90,31 @@ const updateIssueFromDB = async (
   }
 };
 
+const deleteIssueFromDB = async (id: number) => {
+  const issue = await pool.query(
+    `
+        SELECT id FROM issues WHERE id=$1    
+    `,
+    [id],
+  );
+
+  if (id && issue.rows.length === 0) {
+    throw new Error(`Issue not found!`);
+  }
+
+  const result = await pool.query(
+    `
+        DELETE FROM issues WHERE id=$1    
+    `,
+    [id],
+  );
+
+  return result;
+};
+
 export const issuesService = {
   createIssuesIntoDB,
   getSingleIssueFromDB,
   updateIssueFromDB,
+  deleteIssueFromDB,
 };
