@@ -53,7 +53,49 @@ const getSingleIssueFromDB = async (id: number) => {
   return result;
 };
 
+const updateIssueFromDB = async (
+  payload: Omit<IIssues, "status">,
+  id: number,
+  userId: number,
+) => {
+  const { title, description, type } = payload;
+
+  const issue = await pool.query(
+    `
+        SELECT reporter_id FROM issues WHERE id=$1    
+    `,
+    [id],
+  );
+
+  const reporter = await pool.query(
+    `
+        SELECT role FROM users WHERE id=$1
+    `,
+    [userId],
+  );
+
+  console.log({ userId });
+  console.log(issue.rows[0].reporter_id);
+  console.log(reporter.rows[0].role);
+
+  if (
+    userId === issue.rows[0].reporter_id ||
+    reporter.rows[0].role === "maintainer"
+  ) {
+    const issue = await pool.query(
+      `UPDATE issues SET title=$1, description=$2, type=$3 WHERE id=$4 RETURNING *
+      `,
+      [title, description, type, id],
+    );
+
+    return issue.rows[0];
+  } else {
+    throw new Error(`You are not authorized to modify this issue`);
+  }
+};
+
 export const issuesService = {
   createIssuesIntoDB,
   getSingleIssueFromDB,
+  updateIssueFromDB,
 };
