@@ -4,7 +4,7 @@ type TResponse<T> = {
   statusCode: number;
   success: boolean;
   message: string;
-  error?: string;
+  errors?: string;
   data?: T;
 };
 
@@ -12,7 +12,7 @@ const sendResponse = <T>(res: Response, data: TResponse<T>): void => {
   res.status(data.statusCode || 200).json({
     success: data.success,
     message: data.message,
-    error: data.error,
+    errors: data.errors,
     data: data.data,
   });
 };
