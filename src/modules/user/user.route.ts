@@ -3,6 +3,6 @@ import { userController } from "./user.controller";
 
 const router = Router();
 
-router.get("/", userController.createUser);
+router.post("/signup", userController.createUser);
 
 export const userRoute = router;
