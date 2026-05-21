@@ -59,7 +59,6 @@ const userLoginIntoDB = async (payload: Omit<IUser, "name" | "role">) => {
   const jwt_payload = {
     id: user.id,
     name: user.name,
-    email: user.email,
     role: user.role,
   };
 
