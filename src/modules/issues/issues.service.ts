@@ -62,7 +62,7 @@ const updateIssueFromDB = async (
 
   const issue = await pool.query(
     `
-        SELECT reporter_id FROM issues WHERE id=$1    
+        SELECT reporter_id, status FROM issues WHERE id=$1    
     `,
     [id],
   );
@@ -74,12 +74,8 @@ const updateIssueFromDB = async (
     [userId],
   );
 
-  console.log({ userId });
-  console.log(issue.rows[0].reporter_id);
-  console.log(reporter.rows[0].role);
-
   if (
-    userId === issue.rows[0].reporter_id ||
+    userId === (issue.rows[0].reporter_id && issue.rows[0].status === "open") ||
     reporter.rows[0].role === "maintainer"
   ) {
     const issue = await pool.query(
