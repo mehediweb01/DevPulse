@@ -26,6 +26,39 @@ const createIssues = async (req: Request, res: Response) => {
   }
 };
 
+const getAllIssues = async (req: Request, res: Response) => {
+  try {
+    const {
+      sort = "newest",
+      type,
+      status,
+    } = req.query as {
+      sort?: string;
+      type?: string;
+      status?: string;
+    };
+
+    const result = await issuesService.getAllIssuesFromDB(
+      sort as string,
+      type as string,
+      status as string,
+    );
+
+    sendResponse(res, {
+      success: false,
+      statusCode: 200,
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      success: false,
+      message: error.message,
+      errors: error,
+      statusCode: 500,
+    });
+  }
+};
+
 const getSingleIssue = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -97,6 +130,7 @@ const deleteIssue = async (req: Request, res: Response) => {
 
 export const issuesController = {
   createIssues,
+  getAllIssues,
   getSingleIssue,
   updateIssue,
   deleteIssue,
