@@ -50,12 +50,7 @@ const auth = (...roles: Role[]) => {
 
       next();
     } catch (error: any) {
-      sendResponse(res, {
-        success: false,
-        message: error.message,
-        errors: error,
-        statusCode: 500,
-      });
+      next(error);
     }
   };
 };

@@ -153,6 +153,10 @@ const updateIssueFromDB = async (
     [id],
   );
 
+  if (issue.rows.length === 0) {
+    throw new Error(`Issue not found!`);
+  }
+
   const reporter = await pool.query(
     `
         SELECT role FROM users WHERE id=$1
