@@ -1,5 +1,13 @@
 import { pool } from "../../db";
-import { issuesStatus, issuesType, type IIssues } from "./issues.interface";
+import {
+  issuesStatus,
+  issuesType,
+  sortValue,
+  type IIssues,
+  type TIssuesStatus,
+  type TIssuesType,
+  type TSort,
+} from "./issues.interface";
 
 const createIssuesIntoDB = async (payload: IIssues, reporter_id: number) => {
   const { title, description, type, status } = payload;
@@ -22,13 +30,21 @@ const createIssuesIntoDB = async (payload: IIssues, reporter_id: number) => {
 };
 
 const getAllIssuesFromDB = async (
-  sort: string,
-  type: string,
-  status: string,
+  sort: TSort,
+  type: TIssuesType,
+  status: TIssuesStatus,
 ) => {
   const issuesData = await pool.query(`
     SELECT * FROM issues
   `);
+
+  if (
+    (type && !issuesType.includes(type)) ||
+    (status && !issuesStatus.includes(status)) ||
+    (sort && !sortValue.includes(sort))
+  ) {
+    throw new Error(`Invalid filter criteria provided!`);
+  }
 
   if (issuesData.rows.length === 0) {
     throw new Error(`No issues available!`);

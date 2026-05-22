@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import sendResponse from "../../utils/sendResponse";
+import type { TIssuesStatus, TIssuesType, TSort } from "./issues.interface";
 import { issuesService } from "./issues.service";
 
 const createIssues = async (req: Request, res: Response) => {
@@ -33,15 +34,15 @@ const getAllIssues = async (req: Request, res: Response) => {
       type,
       status,
     } = req.query as {
-      sort?: string;
-      type?: string;
-      status?: string;
+      sort?: TSort;
+      type?: TIssuesType;
+      status?: TIssuesStatus;
     };
 
     const result = await issuesService.getAllIssuesFromDB(
-      sort as string,
-      type as string,
-      status as string,
+      sort as TSort,
+      type as TIssuesType,
+      status as TIssuesStatus,
     );
 
     sendResponse(res, {
