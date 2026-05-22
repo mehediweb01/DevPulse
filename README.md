@@ -118,7 +118,7 @@ npm start
 
 | Field       | Type         | Description                   |
 | ----------- | ------------ | ----------------------------- |
-| id          | SERIAL       | Unique user ID                |
+| id          | SERIAL       | Unique issue ID               |
 | title       | VARCHAR(150) | issue title                   |
 | description | TEXT         | issue description             |
 | type        | VARCHAR(16)  | bug / feature_request         |
