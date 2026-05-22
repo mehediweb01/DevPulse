@@ -2,3 +2,4 @@
 .env-locale
 dist
 node_modules
+.vercel
