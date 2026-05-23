@@ -193,7 +193,7 @@ const updateIssueFromDB = async (
     reporter.rows[0].role === "maintainer"
   ) {
     const issue = await pool.query(
-      `UPDATE issues SET title=$1, description=$2, type=$3, status=$4 WHERE id=$5 RETURNING *
+      `UPDATE issues SET title=COALESCE($1, title), description=COALESCE($2, description), type=COALESCE($3, type), status=COALESCE($4, status) WHERE id=$5 RETURNING *
       `,
       [title, description, type, status, id],
     );
