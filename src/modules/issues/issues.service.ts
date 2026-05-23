@@ -140,11 +140,11 @@ const getSingleIssueFromDB = async (id: number) => {
 };
 
 const updateIssueFromDB = async (
-  payload: Omit<IIssues, "status">,
+  payload: Partial<IIssues>,
   id: number,
   userId: number,
 ) => {
-  const { title, description, type } = payload;
+  const { title, description, type, status: issueStatus } = payload;
 
   const issue = await pool.query(
     `
@@ -165,13 +165,37 @@ const updateIssueFromDB = async (
   );
 
   if (
-    userId === (issue.rows[0].reporter_id && issue.rows[0].status === "open") ||
+    (issueStatus && !issuesStatus.includes(issueStatus)) ||
+    (type && !issuesType.includes(type))
+  ) {
+    throw new Error(`Provided issue status or type is invalid`);
+  }
+
+  let status;
+
+  if (reporter.rows[0].role === "maintainer") {
+    status = (issueStatus as string) || "in_progress";
+  } else {
+    status = "in_progress";
+  }
+
+  if (
+    ((userId === issue.rows[0].reporter_id &&
+      issue.rows[0].status === "open") ||
+      reporter.rows[0].role === "contributor") &&
+    issueStatus
+  ) {
+    throw new Error(`You're not status field update`);
+  }
+
+  if (
+    (userId === issue.rows[0].reporter_id && issue.rows[0].status === "open") ||
     reporter.rows[0].role === "maintainer"
   ) {
     const issue = await pool.query(
-      `UPDATE issues SET title=$1, description=$2, type=$3 WHERE id=$4 RETURNING *
+      `UPDATE issues SET title=$1, description=$2, type=$3, status=$4 WHERE id=$5 RETURNING *
       `,
-      [title, description, type, id],
+      [title, description, type, status, id],
     );
 
     return issue.rows[0];
