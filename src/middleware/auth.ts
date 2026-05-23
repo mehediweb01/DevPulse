@@ -34,6 +34,7 @@ const auth = (...roles: Role[]) => {
           statusCode: 404,
           message: "User not found!",
         });
+        return;
       }
 
       const user = userData.rows[0];
@@ -44,6 +45,7 @@ const auth = (...roles: Role[]) => {
           statusCode: 403,
           message: "You do not have permission to access this resource!",
         });
+        return;
       }
 
       req.user = decoded;
